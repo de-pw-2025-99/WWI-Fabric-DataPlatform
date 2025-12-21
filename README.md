@@ -29,9 +29,9 @@ This project demonstrates an end-to-end data engineering solution that:
                                  │
                                  ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        FABRIC LAKEHOUSE                              │
+│                        FABRIC LAKEHOUSE                             │
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐              │
-│  │   BRONZE    │───▶│   SILVER    │───▶│    GOLD     │              │
+│  │   BRONZE    │───▶│   SILVER    │───▶│    GOLD     │             │
 │  │   (Raw)     │    │ (Cleansed)  │    │  (Curated)  │              │
 │  └─────────────┘    └─────────────┘    └─────────────┘              │
 └─────────────────────────────────────────────────────────────────────┘
