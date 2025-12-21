@@ -1,0 +1,64 @@
+{
+  "promotion_batch": "2024-Q1",
+  "created_date": "2024-01-15",
+  "promotions": [
+    {
+      "promotion_id": "PROMO-2024-001",
+      "promotion_name": "New Year Sale",
+      "start_date": "2024-01-01",
+      "end_date": "2024-01-15",
+      "discount_type": "percentage",
+      "discount_value": 15.0,
+      "min_order_value": 100.00,
+      "applicable_stock_groups": ["Novelty Items", "Toys"],
+      "is_active": false,
+      "terms_conditions": "Valid on selected items only."
+    },
+    {
+      "promotion_id": "PROMO-2024-002",
+      "promotion_name": "Valentine's Day Special",
+      "start_date": "2024-02-07",
+      "end_date": "2024-02-14",
+      "discount_type": "percentage",
+      "discount_value": 20.0,
+      "min_order_value": 50.00,
+      "applicable_stock_groups": ["Novelty Items", "Clothing"],
+      "is_active": false,
+      "terms_conditions": "Valid on gift items. One per customer."
+    },
+    {
+      "promotion_id": "PROMO-2024-003",
+      "promotion_name": "Spring Clearance",
+      "start_date": "2024-03-15",
+      "end_date": "2024-03-31",
+      "discount_type": "fixed",
+      "discount_value": 25.00,
+      "min_order_value": 200.00,
+      "applicable_stock_groups": ["T-Shirts", "USB Novelties"],
+      "is_active": false,
+      "terms_conditions": "While supplies last."
+    },
+    {
+      "promotion_id": "PROMO-2024-004",
+      "promotion_name": "Bulk Purchase Discount",
+      "start_date": "2024-04-01",
+      "end_date": "2024-06-30",
+      "discount_type": "tiered",
+      "discount_value": null,
+      "discount_tiers": [
+        {"min_quantity": 10, "max_quantity": 49, "discount_percentage": 5},
+        {"min_quantity": 50, "max_quantity": 99, "discount_percentage": 10},
+        {"min_quantity": 100, "max_quantity": null, "discount_percentage": 15}
+      ],
+      "min_order_value": 0,
+      "applicable_stock_groups": ["All"],
+      "is_active": true,
+      "terms_conditions": "Applies to single item quantity in order."
+    }
+  ],
+  "metadata": {
+    "source_system": "marketing_portal",
+    "export_timestamp": "2024-04-15T10:30:00Z",
+    "record_count": 4
+  }
+}
