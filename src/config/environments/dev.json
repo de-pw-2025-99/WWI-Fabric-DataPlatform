@@ -1,0 +1,68 @@
+{
+  "environment": "dev",
+  "description": "Development environment configuration",
+  "fabric": {
+    "workspace_name": "wwi_dev",
+    "workspace_id": "<YOUR_WORKSPACE_ID>",
+    "lakehouses": {
+      "bronze": {
+        "name": "lh_bronze",
+        "id": "<LAKEHOUSE_ID>"
+      },
+      "silver": {
+        "name": "lh_silver",
+        "id": "<LAKEHOUSE_ID>"
+      },
+      "gold": {
+        "name": "lh_gold",
+        "id": "<LAKEHOUSE_ID>"
+      }
+    },
+    "capacity_id": "<CAPACITY_ID>"
+  },
+  "azure": {
+    "subscription_id": "<SUBSCRIPTION_ID>",
+    "resource_group": "rg-wwi-fabric-platform",
+    "storage_account": {
+      "name": "<STORAGE_ACCOUNT_NAME>",
+      "containers": {
+        "landing": "landing",
+        "archive": "archive",
+        "external": "external"
+      }
+    }
+  },
+  "source_connections": {
+    "sql_server": {
+      "connection_name": "conn_wwi_sqlserver",
+      "server": "localhost",
+      "database": "WideWorldImporters",
+      "gateway_name": "WWI-OnPrem-Gateway"
+    }
+  },
+  "pipeline_settings": {
+    "bronze": {
+      "retry_count": 3,
+      "retry_interval_seconds": 30,
+      "timeout_minutes": 120,
+      "parallel_copies": 4
+    },
+    "silver": {
+      "retry_count": 2,
+      "timeout_minutes": 60
+    },
+    "gold": {
+      "retry_count": 2,
+      "timeout_minutes": 60
+    }
+  },
+  "logging": {
+    "log_level": "DEBUG",
+    "enable_detailed_metrics": true
+  },
+  "feature_flags": {
+    "enable_cdc": false,
+    "enable_real_time": false,
+    "enable_data_quality_checks": true
+  }
+}

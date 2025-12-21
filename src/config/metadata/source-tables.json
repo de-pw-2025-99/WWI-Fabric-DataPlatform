@@ -1,0 +1,267 @@
+{
+  "metadata_version": "1.0",
+  "source_system": "WideWorldImporters",
+  "last_updated": "2024-12-21",
+  "description": "Metadata configuration for WWI source tables extraction",
+  "tables": [
+    {
+      "schema_name": "Sales",
+      "table_name": "Customers",
+      "primary_key": ["CustomerID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "sales",
+      "estimated_row_count": 700,
+      "description": "Customer master data"
+    },
+    {
+      "schema_name": "Sales",
+      "table_name": "Orders",
+      "primary_key": ["OrderID"],
+      "watermark_column": "LastEditedWhen",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "sales",
+      "estimated_row_count": 73000,
+      "description": "Sales order headers"
+    },
+    {
+      "schema_name": "Sales",
+      "table_name": "OrderLines",
+      "primary_key": ["OrderLineID"],
+      "watermark_column": "LastEditedWhen",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "sales",
+      "estimated_row_count": 231000,
+      "description": "Sales order line items"
+    },
+    {
+      "schema_name": "Sales",
+      "table_name": "Invoices",
+      "primary_key": ["InvoiceID"],
+      "watermark_column": "LastEditedWhen",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "sales",
+      "estimated_row_count": 70000,
+      "description": "Sales invoices"
+    },
+    {
+      "schema_name": "Sales",
+      "table_name": "InvoiceLines",
+      "primary_key": ["InvoiceLineID"],
+      "watermark_column": "LastEditedWhen",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "sales",
+      "estimated_row_count": 228000,
+      "description": "Sales invoice line items"
+    },
+    {
+      "schema_name": "Sales",
+      "table_name": "CustomerCategories",
+      "primary_key": ["CustomerCategoryID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "sales",
+      "estimated_row_count": 10,
+      "description": "Customer category reference"
+    },
+    {
+      "schema_name": "Sales",
+      "table_name": "BuyingGroups",
+      "primary_key": ["BuyingGroupID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "sales",
+      "estimated_row_count": 5,
+      "description": "Buying group reference"
+    },
+    {
+      "schema_name": "Warehouse",
+      "table_name": "StockItems",
+      "primary_key": ["StockItemID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "inventory",
+      "estimated_row_count": 230,
+      "description": "Product/stock item master data"
+    },
+    {
+      "schema_name": "Warehouse",
+      "table_name": "StockItemHoldings",
+      "primary_key": ["StockItemID"],
+      "watermark_column": "LastEditedWhen",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "inventory",
+      "estimated_row_count": 230,
+      "description": "Current stock holdings"
+    },
+    {
+      "schema_name": "Warehouse",
+      "table_name": "StockGroups",
+      "primary_key": ["StockGroupID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "inventory",
+      "estimated_row_count": 15,
+      "description": "Stock group reference"
+    },
+    {
+      "schema_name": "Warehouse",
+      "table_name": "Colors",
+      "primary_key": ["ColorID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "inventory",
+      "estimated_row_count": 40,
+      "description": "Color reference"
+    },
+    {
+      "schema_name": "Warehouse",
+      "table_name": "PackageTypes",
+      "primary_key": ["PackageTypeID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "inventory",
+      "estimated_row_count": 15,
+      "description": "Package type reference"
+    },
+    {
+      "schema_name": "Purchasing",
+      "table_name": "Suppliers",
+      "primary_key": ["SupplierID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "purchasing",
+      "estimated_row_count": 15,
+      "description": "Supplier master data"
+    },
+    {
+      "schema_name": "Purchasing",
+      "table_name": "SupplierCategories",
+      "primary_key": ["SupplierCategoryID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "purchasing",
+      "estimated_row_count": 10,
+      "description": "Supplier category reference"
+    },
+    {
+      "schema_name": "Purchasing",
+      "table_name": "PurchaseOrders",
+      "primary_key": ["PurchaseOrderID"],
+      "watermark_column": "LastEditedWhen",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "purchasing",
+      "estimated_row_count": 2100,
+      "description": "Purchase order headers"
+    },
+    {
+      "schema_name": "Purchasing",
+      "table_name": "PurchaseOrderLines",
+      "primary_key": ["PurchaseOrderLineID"],
+      "watermark_column": "LastEditedWhen",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "purchasing",
+      "estimated_row_count": 8400,
+      "description": "Purchase order line items"
+    },
+    {
+      "schema_name": "Application",
+      "table_name": "People",
+      "primary_key": ["PersonID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "incremental",
+      "is_active": true,
+      "business_domain": "application",
+      "estimated_row_count": 1200,
+      "description": "People (employees, contacts)"
+    },
+    {
+      "schema_name": "Application",
+      "table_name": "Cities",
+      "primary_key": ["CityID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "application",
+      "estimated_row_count": 37000,
+      "description": "City reference"
+    },
+    {
+      "schema_name": "Application",
+      "table_name": "StateProvinces",
+      "primary_key": ["StateProvinceID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "application",
+      "estimated_row_count": 55,
+      "description": "State/Province reference"
+    },
+    {
+      "schema_name": "Application",
+      "table_name": "Countries",
+      "primary_key": ["CountryID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "application",
+      "estimated_row_count": 200,
+      "description": "Country reference"
+    },
+    {
+      "schema_name": "Application",
+      "table_name": "DeliveryMethods",
+      "primary_key": ["DeliveryMethodID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "application",
+      "estimated_row_count": 10,
+      "description": "Delivery method reference"
+    },
+    {
+      "schema_name": "Application",
+      "table_name": "PaymentMethods",
+      "primary_key": ["PaymentMethodID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "application",
+      "estimated_row_count": 5,
+      "description": "Payment method reference"
+    },
+    {
+      "schema_name": "Application",
+      "table_name": "TransactionTypes",
+      "primary_key": ["TransactionTypeID"],
+      "watermark_column": "ValidFrom",
+      "load_type": "full",
+      "is_active": true,
+      "business_domain": "application",
+      "estimated_row_count": 15,
+      "description": "Transaction type reference"
+    }
+  ],
+  "extraction_settings": {
+    "batch_size": 100000,
+    "default_watermark_value": "1900-01-01T00:00:00",
+    "parallel_degree": 4,
+    "timeout_minutes": 60
+  }
+}
