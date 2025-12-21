@@ -1,0 +1,101 @@
+# =============================================================================
+# WWI-Fabric-DataPlatform CI Pipeline
+# Purpose: Continuous Integration - Validate and test changes
+# =============================================================================
+# This is a placeholder that will be fully implemented in Phase 6
+# =============================================================================
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+      - feature/*
+  paths:
+    exclude:
+      - '**.md'
+      - 'docs/**'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - name: pythonVersion
+    value: '3.11'
+
+stages:
+  # =============================================================================
+  # Stage: Validate
+  # =============================================================================
+  - stage: Validate
+    displayName: 'Validate Changes'
+    jobs:
+      - job: ValidateInfrastructure
+        displayName: 'Validate Infrastructure'
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Validate Bicep Templates'
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az bicep build --file infrastructure/azure/main.bicep
+
+      - job: ValidatePython
+        displayName: 'Validate Python'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '$(pythonVersion)'
+            displayName: 'Use Python $(pythonVersion)'
+          
+          - script: |
+              python -m pip install --upgrade pip
+              pip install flake8 black
+            displayName: 'Install dependencies'
+          
+          - script: |
+              echo "Python validation will be added in Phase 6"
+            displayName: 'Validate Python code'
+
+  # =============================================================================
+  # Stage: Test
+  # =============================================================================
+  - stage: Test
+    displayName: 'Run Tests'
+    dependsOn: Validate
+    condition: succeeded()
+    jobs:
+      - job: UnitTests
+        displayName: 'Unit Tests'
+        steps:
+          - script: |
+              echo "Unit tests will be added in Phase 6"
+            displayName: 'Run unit tests'
+
+  # =============================================================================
+  # Stage: Build
+  # =============================================================================
+  - stage: Build
+    displayName: 'Build Artifacts'
+    dependsOn: Test
+    condition: succeeded()
+    jobs:
+      - job: BuildArtifacts
+        displayName: 'Build Deployment Artifacts'
+        steps:
+          - task: CopyFiles@2
+            displayName: 'Copy files to staging'
+            inputs:
+              sourceFolder: '$(Build.SourcesDirectory)'
+              contents: |
+                src/**
+                infrastructure/**
+              targetFolder: '$(Build.ArtifactStagingDirectory)'
+          
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish artifacts'
+            inputs:
+              pathToPublish: '$(Build.ArtifactStagingDirectory)'
+              artifactName: 'wwi-fabric-artifacts'

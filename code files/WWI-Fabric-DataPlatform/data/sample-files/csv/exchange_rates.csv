@@ -1,0 +1,33 @@
+date,currency_code,currency_name,exchange_rate_to_usd,source
+2024-01-01,AUD,Australian Dollar,0.6823,sample_data
+2024-01-01,EUR,Euro,1.1036,sample_data
+2024-01-01,GBP,British Pound,1.2735,sample_data
+2024-01-01,CAD,Canadian Dollar,0.7562,sample_data
+2024-01-01,JPY,Japanese Yen,0.0071,sample_data
+2024-01-01,CNY,Chinese Yuan,0.1412,sample_data
+2024-01-01,INR,Indian Rupee,0.0120,sample_data
+2024-01-01,NZD,New Zealand Dollar,0.6312,sample_data
+2024-02-01,AUD,Australian Dollar,0.6545,sample_data
+2024-02-01,EUR,Euro,1.0823,sample_data
+2024-02-01,GBP,British Pound,1.2687,sample_data
+2024-02-01,CAD,Canadian Dollar,0.7438,sample_data
+2024-02-01,JPY,Japanese Yen,0.0067,sample_data
+2024-02-01,CNY,Chinese Yuan,0.1392,sample_data
+2024-02-01,INR,Indian Rupee,0.0120,sample_data
+2024-02-01,NZD,New Zealand Dollar,0.6134,sample_data
+2024-03-01,AUD,Australian Dollar,0.6512,sample_data
+2024-03-01,EUR,Euro,1.0856,sample_data
+2024-03-01,GBP,British Pound,1.2658,sample_data
+2024-03-01,CAD,Canadian Dollar,0.7412,sample_data
+2024-03-01,JPY,Japanese Yen,0.0066,sample_data
+2024-03-01,CNY,Chinese Yuan,0.1389,sample_data
+2024-03-01,INR,Indian Rupee,0.0121,sample_data
+2024-03-01,NZD,New Zealand Dollar,0.6078,sample_data
+2024-04-01,AUD,Australian Dollar,0.6489,sample_data
+2024-04-01,EUR,Euro,1.0734,sample_data
+2024-04-01,GBP,British Pound,1.2534,sample_data
+2024-04-01,CAD,Canadian Dollar,0.7356,sample_data
+2024-04-01,JPY,Japanese Yen,0.0066,sample_data
+2024-04-01,CNY,Chinese Yuan,0.1378,sample_data
+2024-04-01,INR,Indian Rupee,0.0120,sample_data
+2024-04-01,NZD,New Zealand Dollar,0.5978,sample_data
