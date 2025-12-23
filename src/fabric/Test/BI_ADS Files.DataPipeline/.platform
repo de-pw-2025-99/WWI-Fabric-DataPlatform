@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "BI_ADS Files"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "51f43cf0-23c9-b1f3-4b50-f3fde0cd8ca1"
+  }
+}
