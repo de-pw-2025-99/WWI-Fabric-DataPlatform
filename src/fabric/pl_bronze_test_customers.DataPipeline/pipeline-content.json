@@ -1,0 +1,499 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": "SELECT \n    CustomerID,\n    CustomerName,\n    BillToCustomerID,\n    CustomerCategoryID,\n    BuyingGroupID,\n    PrimaryContactPersonID,\n    AlternateContactPersonID,\n    DeliveryMethodID,\n    DeliveryCityID,\n    PostalCityID,\n    CreditLimit,\n    AccountOpenedDate,\n    StandardDiscountPercentage,\n    IsStatementSent,\n    IsOnCreditHold,\n    PaymentDays,\n    PhoneNumber,\n    FaxNumber,\n    DeliveryRun,\n    RunPosition,\n    WebsiteURL,\n    DeliveryAddressLine1,\n    DeliveryAddressLine2,\n    DeliveryPostalCode,\n    -- Convert Geography to text (WKT format)\n    DeliveryLocation.STAsText() AS DeliveryLocationWKT,\n    PostalAddressLine1,\n    PostalAddressLine2,\n    PostalPostalCode,\n    LastEditedBy,\n    ValidFrom,\n    ValidTo,\n    -- Metadata columns\n    'wwi_sqlserver' AS _source_system,\n    'Sales.Customers' AS _source_table,\n    GETUTCDATE() AS _ingestion_timestamp,\n    'pl_test_001' AS _batch_id,\n    CAST(0 AS BIT) AS _is_deleted\nFROM Sales.Customers",
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00",
+            "datasetSettings": {
+              "type": "SqlServerTable",
+              "typeProperties": {
+                "schema": "Sales",
+                "table": "Customers",
+                "database": "WideWorldImporters"
+              },
+              "schema": [],
+              "externalReferences": {
+                "connection": "cddfdda1-e456-4e41-9611-b283a3a7ce00"
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "LakehouseTableSink",
+            "tableActionOption": "OverwriteSchema",
+            "applyVOrder": true,
+            "partitionOption": "None",
+            "datasetSettings": {
+              "type": "LakehouseTable",
+              "typeProperties": {
+                "schema": "dbo",
+                "table": "bronze_watermark"
+              },
+              "schema": [],
+              "linkedService": {
+                "name": "lh_bronze",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "b9eb157d-6c40-8a6b-4139-ed20f4ac55a7",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "rootFolder": "Tables"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "translator": {
+            "type": "TabularTranslator",
+            "mappings": [
+              {
+                "source": {
+                  "name": "CustomerID",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "CustomerID",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "CustomerName",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "100"
+                },
+                "sink": {
+                  "name": "CustomerName",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "BillToCustomerID",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "BillToCustomerID",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "CustomerCategoryID",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "CustomerCategoryID",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "BuyingGroupID",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "BuyingGroupID",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "PrimaryContactPersonID",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "PrimaryContactPersonID",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "AlternateContactPersonID",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "AlternateContactPersonID",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "DeliveryMethodID",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "DeliveryMethodID",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "DeliveryCityID",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "DeliveryCityID",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "PostalCityID",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "PostalCityID",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "CreditLimit",
+                  "type": "Decimal",
+                  "physicalType": "decimal",
+                  "scale": 2,
+                  "precision": 18
+                },
+                "sink": {
+                  "name": "CreditLimit",
+                  "physicalType": "decimal",
+                  "scale": 2,
+                  "precision": 18
+                }
+              },
+              {
+                "source": {
+                  "name": "AccountOpenedDate",
+                  "type": "Date",
+                  "physicalType": "date"
+                },
+                "sink": {
+                  "name": "AccountOpenedDate",
+                  "physicalType": "date"
+                }
+              },
+              {
+                "source": {
+                  "name": "StandardDiscountPercentage",
+                  "type": "Decimal",
+                  "physicalType": "decimal",
+                  "scale": 3,
+                  "precision": 18
+                },
+                "sink": {
+                  "name": "StandardDiscountPercentage",
+                  "physicalType": "decimal",
+                  "scale": 3,
+                  "precision": 18
+                }
+              },
+              {
+                "source": {
+                  "name": "IsStatementSent",
+                  "type": "Boolean",
+                  "physicalType": "bit"
+                },
+                "sink": {
+                  "name": "IsStatementSent",
+                  "physicalType": "boolean"
+                }
+              },
+              {
+                "source": {
+                  "name": "IsOnCreditHold",
+                  "type": "Boolean",
+                  "physicalType": "bit"
+                },
+                "sink": {
+                  "name": "IsOnCreditHold",
+                  "physicalType": "boolean"
+                }
+              },
+              {
+                "source": {
+                  "name": "PaymentDays",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "PaymentDays",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "PhoneNumber",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "20"
+                },
+                "sink": {
+                  "name": "PhoneNumber",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "FaxNumber",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "20"
+                },
+                "sink": {
+                  "name": "FaxNumber",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "DeliveryRun",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "5"
+                },
+                "sink": {
+                  "name": "DeliveryRun",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "RunPosition",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "5"
+                },
+                "sink": {
+                  "name": "RunPosition",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "WebsiteURL",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "256"
+                },
+                "sink": {
+                  "name": "WebsiteURL",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "DeliveryAddressLine1",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "60"
+                },
+                "sink": {
+                  "name": "DeliveryAddressLine1",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "DeliveryAddressLine2",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "60"
+                },
+                "sink": {
+                  "name": "DeliveryAddressLine2",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "DeliveryPostalCode",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "10"
+                },
+                "sink": {
+                  "name": "DeliveryPostalCode",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "DeliveryLocationWKT",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "MAX"
+                },
+                "sink": {
+                  "name": "DeliveryLocationWKT",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "PostalAddressLine1",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "60"
+                },
+                "sink": {
+                  "name": "PostalAddressLine1",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "PostalAddressLine2",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "60"
+                },
+                "sink": {
+                  "name": "PostalAddressLine2",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "PostalPostalCode",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "10"
+                },
+                "sink": {
+                  "name": "PostalPostalCode",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "LastEditedBy",
+                  "type": "Int32",
+                  "physicalType": "int"
+                },
+                "sink": {
+                  "name": "LastEditedBy",
+                  "physicalType": "integer"
+                }
+              },
+              {
+                "source": {
+                  "name": "ValidFrom",
+                  "type": "DateTime",
+                  "physicalType": "datetime2",
+                  "precision": 7
+                },
+                "sink": {
+                  "name": "ValidFrom",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "ValidTo",
+                  "type": "DateTime",
+                  "physicalType": "datetime2",
+                  "precision": 7
+                },
+                "sink": {
+                  "name": "ValidTo",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "_source_system",
+                  "type": "String",
+                  "physicalType": "varchar",
+                  "length": "13"
+                },
+                "sink": {
+                  "name": "_source_system",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "_source_table",
+                  "type": "String",
+                  "physicalType": "varchar",
+                  "length": "15"
+                },
+                "sink": {
+                  "name": "_source_table",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "_ingestion_timestamp",
+                  "type": "DateTime",
+                  "physicalType": "datetime"
+                },
+                "sink": {
+                  "name": "_ingestion_timestamp",
+                  "physicalType": "timestamp"
+                }
+              },
+              {
+                "source": {
+                  "name": "_batch_id",
+                  "type": "String",
+                  "physicalType": "varchar",
+                  "length": "11"
+                },
+                "sink": {
+                  "name": "_batch_id",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "_is_deleted",
+                  "type": "Boolean",
+                  "physicalType": "bit"
+                },
+                "sink": {
+                  "name": "_is_deleted",
+                  "physicalType": "boolean"
+                }
+              }
+            ],
+            "typeConversion": true,
+            "typeConversionSettings": {
+              "allowDataTruncation": true,
+              "treatBooleanAsNumber": false
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Copy data1",
+        "dependsOn": []
+      }
+    ]
+  }
+}

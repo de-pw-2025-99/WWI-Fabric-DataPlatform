@@ -1,0 +1,278 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "LakehouseTableSource"
+          },
+          "datasetSettings": {
+            "type": "LakehouseTable",
+            "schema": [],
+            "linkedService": {
+              "name": "lh_bronze",
+              "properties": {
+                "type": "Lakehouse",
+                "typeProperties": {
+                  "artifactId": "f4ac55a7-ed20-4139-8a6b-6c40b9eb157d",
+                  "workspaceId": "4ff4e458-6d35-4bf0-944e-bb512481f096",
+                  "rootFolder": "Tables"
+                },
+                "annotations": []
+              }
+            },
+            "annotations": []
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Get Full Load Tables",
+        "state": "Inactive",
+        "onInactiveMarkAs": "Succeeded",
+        "dependsOn": []
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@variables('full_load_tables')",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "Copy",
+              "typeProperties": {
+                "source": {
+                  "type": "SqlServerSource",
+                  "sqlReaderQuery": {
+                    "value": "@concat('SELECT *, ''wwi_sqlserver'' AS _source_system, ''', item().source_schema, '.', item().source_table, ''' AS _source_table, GETUTCDATE() AS _ingestion_timestamp, ''', pipeline().RunId, ''' AS _batch_id, CAST(0 AS BIT) AS _is_deleted FROM ', item().source_schema, '.', item().source_table)",
+                    "type": "Expression"
+                  },
+                  "partitionOption": "None",
+                  "queryTimeout": "02:00:00",
+                  "datasetSettings": {
+                    "type": "SqlServerTable",
+                    "typeProperties": {
+                      "database": "WideWorldImporters"
+                    },
+                    "schema": [],
+                    "externalReferences": {
+                      "connection": "cddfdda1-e456-4e41-9611-b283a3a7ce00"
+                    },
+                    "annotations": []
+                  }
+                },
+                "sink": {
+                  "type": "LakehouseTableSink",
+                  "tableActionOption": "OverwriteSchema",
+                  "applyVOrder": true,
+                  "partitionOption": "None",
+                  "datasetSettings": {
+                    "type": "LakehouseTable",
+                    "typeProperties": {
+                      "table": {
+                        "value": "@item().bronze_table",
+                        "type": "Expression"
+                      }
+                    },
+                    "schema": [],
+                    "linkedService": {
+                      "name": "lh_bronze",
+                      "properties": {
+                        "type": "Lakehouse",
+                        "typeProperties": {
+                          "artifactId": "b9eb157d-6c40-8a6b-4139-ed20f4ac55a7",
+                          "workspaceId": "00000000-0000-0000-0000-000000000000",
+                          "rootFolder": "Tables"
+                        },
+                        "annotations": []
+                      }
+                    },
+                    "annotations": []
+                  }
+                },
+                "translator": {
+                  "type": "TabularTranslator",
+                  "typeConversion": true,
+                  "typeConversionSettings": {
+                    "allowDataTruncation": true,
+                    "treatBooleanAsNumber": false
+                  }
+                },
+                "enableStaging": false
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Copy data1",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "ForEach Full Load",
+        "dependsOn": []
+      }
+    ],
+    "variables": {
+      "full_load_tables": {
+        "type": "Array",
+        "defaultValue": [
+          {
+            "source_schema": "Sales",
+            "source_table": "CustomerCategories",
+            "bronze_table": "wwi_sales_customercategories"
+          },
+          {
+            "source_schema": "Sales",
+            "source_table": "BuyingGroups",
+            "bronze_table": "wwi_sales_buyinggroups"
+          },
+          {
+            "source_schema": "Application",
+            "source_table": "People",
+            "bronze_table": "wwi_application_people"
+          },
+          {
+            "source_schema": "Application",
+            "source_table": "PaymentMethods",
+            "bronze_table": "wwi_application_paymentmethods"
+          },
+          {
+            "source_schema": "Application",
+            "source_table": "DeliveryMethods",
+            "bronze_table": "wwi_application_deliverymethods"
+          },
+          {
+            "source_schema": "Application",
+            "source_table": "TransactionTypes",
+            "bronze_table": "wwi_application_transactiontypes"
+          },
+          {
+            "source_schema": "Warehouse",
+            "source_table": "StockItems",
+            "bronze_table": "wwi_warehouse_stockitems"
+          },
+          {
+            "source_schema": "Warehouse",
+            "source_table": "Colors",
+            "bronze_table": "wwi_warehouse_colors"
+          },
+          {
+            "source_schema": "Warehouse",
+            "source_table": "PackageTypes",
+            "bronze_table": "wwi_warehouse_packagetypes"
+          },
+          {
+            "source_schema": "Warehouse",
+            "source_table": "StockGroups",
+            "bronze_table": "wwi_warehouse_stockgroups"
+          },
+          {
+            "source_schema": "Purchasing",
+            "source_table": "SupplierCategories",
+            "bronze_table": "wwi_purchasing_suppliercategories"
+          }
+        ]
+      },
+      "incremental_tables": {
+        "type": "Array",
+        "defaultValue": [
+          {
+            "source_schema": "Sales",
+            "source_table": "Orders",
+            "bronze_table": "wwi_sales_orders",
+            "watermark_column": "LastEditedWhen"
+          },
+          {
+            "source_schema": "Sales",
+            "source_table": "OrderLines",
+            "bronze_table": "wwi_sales_orderlines",
+            "watermark_column": "LastEditedWhen"
+          },
+          {
+            "source_schema": "Sales",
+            "source_table": "Invoices",
+            "bronze_table": "wwi_sales_invoices",
+            "watermark_column": "LastEditedWhen"
+          },
+          {
+            "source_schema": "Sales",
+            "source_table": "InvoiceLines",
+            "bronze_table": "wwi_sales_invoicelines",
+            "watermark_column": "LastEditedWhen"
+          },
+          {
+            "source_schema": "Sales",
+            "source_table": "CustomerTransactions",
+            "bronze_table": "wwi_sales_customertransactions",
+            "watermark_column": "LastEditedWhen"
+          },
+          {
+            "source_schema": "Purchasing",
+            "source_table": "PurchaseOrders",
+            "bronze_table": "wwi_purchasing_purchaseorders",
+            "watermark_column": "LastEditedWhen"
+          },
+          {
+            "source_schema": "Purchasing",
+            "source_table": "PurchaseOrderLines",
+            "bronze_table": "wwi_purchasing_purchaseorderlines",
+            "watermark_column": "LastEditedWhen"
+          },
+          {
+            "source_schema": "Purchasing",
+            "source_table": "SupplierTransactions",
+            "bronze_table": "wwi_purchasing_suppliertransactions",
+            "watermark_column": "LastEditedWhen"
+          },
+          {
+            "source_schema": "Warehouse",
+            "source_table": "StockItemTransactions",
+            "bronze_table": "wwi_warehouse_stockitemtransactions",
+            "watermark_column": "LastEditedWhen"
+          }
+        ]
+      },
+      "geography_tables": {
+        "type": "Array",
+        "defaultValue": [
+          {
+            "source_schema": "Sales",
+            "source_table": "Customers",
+            "bronze_table": "wwi_sales_customers"
+          },
+          {
+            "source_schema": "Application",
+            "source_table": "Cities",
+            "bronze_table": "wwi_application_cities"
+          },
+          {
+            "source_schema": "Application",
+            "source_table": "StateProvinces",
+            "bronze_table": "wwi_application_stateprovinces"
+          },
+          {
+            "source_schema": "Application",
+            "source_table": "Countries",
+            "bronze_table": "wwi_application_countries"
+          },
+          {
+            "source_schema": "Purchasing",
+            "source_table": "Suppliers",
+            "bronze_table": "wwi_purchasing_suppliers"
+          }
+        ]
+      }
+    }
+  }
+}
