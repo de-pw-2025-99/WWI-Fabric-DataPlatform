@@ -1,0 +1,27 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "name": "ForEach1",
+        "type": "ForEach",
+        "dependsOn": [],
+        "typeProperties": {
+          "items": {
+            "value": "@createArray(1,2,4)",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "name": "Wait1",
+              "type": "Wait",
+              "dependsOn": [],
+              "typeProperties": {
+                "waitTimeInSeconds": 1
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
