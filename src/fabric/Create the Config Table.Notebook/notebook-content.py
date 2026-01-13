@@ -76,7 +76,9 @@ display(spark.sql("SELECT * FROM bronze_config ORDER BY load_type, priority, sou
 
 # META {
 # META   "language": "python",
-# META   "language_group": "synapse_pyspark"
+# META   "language_group": "synapse_pyspark",
+# META   "frozen": false,
+# META   "editable": true
 # META }
 
 # CELL ********************

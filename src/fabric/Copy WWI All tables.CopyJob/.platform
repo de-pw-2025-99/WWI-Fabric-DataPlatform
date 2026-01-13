@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "CopyJob",
+    "displayName": "Copy WWI All tables"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a9f4ad11-c3bc-a990-4a58-d3a72ea28f84"
+  }
+}
