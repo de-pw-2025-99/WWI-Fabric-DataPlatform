@@ -1,0 +1,373 @@
+{
+    "name": "pl_silver_master_load",
+    "properties": {
+        "description": "Master orchestrator for Silver layer transformations. Executes notebooks in dependency order.",
+        "activities": [
+            {
+                "name": "Set Processing Timestamp",
+                "type": "SetVariable",
+                "dependsOn": [],
+                "typeProperties": {
+                    "variableName": "processing_timestamp",
+                    "value": {
+                        "value": "@utcNow()",
+                        "type": "Expression"
+                    }
+                }
+            },
+            {
+                "name": "Load Reference Tables",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Set Processing Timestamp",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.02:00:00",
+                    "retry": 1,
+                    "retryIntervalInSeconds": 60
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_reference_tables",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": {
+                                "value": "@pipeline().RunId",
+                                "type": "Expression"
+                            },
+                            "type": "string"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "ls_fabric_lakehouse_silver",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "Load Person Master",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Load Reference Tables",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.01:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_master_person",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": "@pipeline().RunId",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Load Customer Master",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Load Reference Tables",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.01:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_master_customer",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": "@pipeline().RunId",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Load Supplier Master",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Load Reference Tables",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.01:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_master_supplier",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": "@pipeline().RunId",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Load Stock Item Master",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Load Reference Tables",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.01:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_master_stock_item",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": "@pipeline().RunId",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Load Orders",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Load Customer Master",
+                        "dependencyConditions": ["Succeeded"]
+                    },
+                    {
+                        "activity": "Load Stock Item Master",
+                        "dependencyConditions": ["Succeeded"]
+                    },
+                    {
+                        "activity": "Load Person Master",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.02:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_txn_orders",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": "@pipeline().RunId",
+                            "type": "Expression"
+                        },
+                        "is_full_load": {
+                            "value": "@pipeline().parameters.is_full_load",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Load Invoices",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Load Orders",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.02:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_txn_invoices",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": "@pipeline().RunId",
+                            "type": "Expression"
+                        },
+                        "is_full_load": {
+                            "value": "@pipeline().parameters.is_full_load",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Load Purchase Orders",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Load Supplier Master",
+                        "dependencyConditions": ["Succeeded"]
+                    },
+                    {
+                        "activity": "Load Stock Item Master",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.01:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_txn_purchases",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": "@pipeline().RunId",
+                            "type": "Expression"
+                        },
+                        "is_full_load": {
+                            "value": "@pipeline().parameters.is_full_load",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Load Financial Transactions",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Load Invoices",
+                        "dependencyConditions": ["Succeeded"]
+                    },
+                    {
+                        "activity": "Load Purchase Orders",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.02:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_txn_financials",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": "@pipeline().RunId",
+                            "type": "Expression"
+                        },
+                        "is_full_load": {
+                            "value": "@pipeline().parameters.is_full_load",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Load Inventory",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Load Stock Item Master",
+                        "dependencyConditions": ["Succeeded"]
+                    },
+                    {
+                        "activity": "Load Invoices",
+                        "dependencyConditions": ["Succeeded"]
+                    },
+                    {
+                        "activity": "Load Purchase Orders",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.02:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_inventory",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": "@pipeline().RunId",
+                            "type": "Expression"
+                        },
+                        "is_full_load": {
+                            "value": "@pipeline().parameters.is_full_load",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "Load IoT Temperatures",
+                "type": "Notebook",
+                "dependsOn": [
+                    {
+                        "activity": "Set Processing Timestamp",
+                        "dependencyConditions": ["Succeeded"]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.03:00:00",
+                    "retry": 1
+                },
+                "typeProperties": {
+                    "notebook": {
+                        "referenceName": "nb_silver_iot_temperatures",
+                        "type": "NotebookReference"
+                    },
+                    "parameters": {
+                        "pipeline_run_id": {
+                            "value": "@pipeline().RunId",
+                            "type": "Expression"
+                        },
+                        "is_full_load": {
+                            "value": "@pipeline().parameters.is_full_load",
+                            "type": "Expression"
+                        }
+                    }
+                }
+            }
+        ],
+        "parameters": {
+            "is_full_load": {
+                "type": "string",
+                "defaultValue": "true"
+            }
+        },
+        "variables": {
+            "processing_timestamp": {
+                "type": "String"
+            }
+        }
+    }
+}

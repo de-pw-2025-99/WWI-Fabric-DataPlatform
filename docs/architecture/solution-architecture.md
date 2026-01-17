@@ -102,11 +102,13 @@ This document describes the technical architecture for the WWI-Fabric-DataPlatfo
 ### 1. Source Systems
 
 #### SQL Server (On-Premises)
+
 - **Database**: Wide World Importers (OLTP)
 - **Connection**: Self-Hosted Integration Runtime (SHIR)
 - **Extraction**: Full and incremental loads via CDC or timestamp
 
 #### Supplementary Files
+
 - **Types**: CSV, JSON
 - **Location**: ADLS Gen2 or local file system
 - **Purpose**: Reference data, external data sources
@@ -114,6 +116,7 @@ This document describes the technical architecture for the WWI-Fabric-DataPlatfo
 ### 2. Azure Components
 
 #### Azure Data Lake Storage Gen2
+
 - **Purpose**: External storage, landing zone, archive
 - **Containers**:
   - `landing/` - Temporary staging for large files
@@ -121,6 +124,7 @@ This document describes the technical architecture for the WWI-Fabric-DataPlatfo
   - `external/` - Third-party data files
 
 #### Self-Hosted Integration Runtime
+
 - **Purpose**: Secure connection to on-premises SQL Server
 - **Location**: On-premises server with SQL Server access
 - **Security**: Encrypted connection, no inbound firewall rules
