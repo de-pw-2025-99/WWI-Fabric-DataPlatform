@@ -2,11 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
     "type": "Notebook",
-    "displayName": "Notebook 4",
-    "description": "New notebook"
+    "displayName": "nb_silver_utilities"
   },
   "config": {
     "version": "2.0",
-    "logicalId": "15ea2e19-8eda-bfae-4d80-240b827cd0bc"
+    "logicalId": "af68cc82-e979-9ebe-4226-e7f452972e57"
   }
 }

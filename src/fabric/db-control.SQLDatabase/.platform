@@ -1,12 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
-    "type": "Notebook",
-    "displayName": "Notebook 6",
-    "description": "New notebook"
+    "type": "SQLDatabase",
+    "displayName": "db-control"
   },
   "config": {
     "version": "2.0",
-    "logicalId": "5ad69256-d644-bff4-4f86-023d0f376e68"
+    "logicalId": "f5c247c9-131b-a4a7-4856-a88897f1a02c"
   }
 }

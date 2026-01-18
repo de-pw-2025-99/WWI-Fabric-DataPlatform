@@ -1,0 +1,325 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "AzureSqlSource",
+            "sqlReaderStoredProcedureName": "[control].[usp_start_table_load]",
+            "storedProcedureParameters": {
+              "batch_run_id": {
+                "type": "Int32",
+                "value": {
+                  "value": "@pipeline().parameters.batch_run_id",
+                  "type": "Expression"
+                }
+              },
+              "config_id": {
+                "type": "Int32",
+                "value": {
+                  "value": "@pipeline().parameters.config_id",
+                  "type": "Expression"
+                }
+              },
+              "pipeline_run_id": {
+                "type": "String",
+                "value": {
+                  "value": "@pipeline().RunId",
+                  "type": "Expression"
+                }
+              }
+            },
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "AzureSqlTable",
+            "typeProperties": {
+              "database": "db-control"
+            },
+            "schema": [],
+            "externalReferences": {
+              "connection": "8405b1e0-58de-4664-a4c2-0372f5291420"
+            },
+            "annotations": []
+          },
+          "firstRowOnly": true
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Start Table Load",
+        "dependsOn": []
+      },
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": {
+              "value": "@activity('Start Table Load').output.firstRow.source_query",
+              "type": "Expression"
+            },
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00",
+            "datasetSettings": {
+              "type": "SqlServerTable",
+              "typeProperties": {
+                "database": "WideWorldImporters"
+              },
+              "schema": [],
+              "externalReferences": {
+                "connection": "cddfdda1-e456-4e41-9611-b283a3a7ce00"
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "LakehouseTableSink",
+            "tableActionOption": "OverwriteSchema",
+            "applyVOrder": true,
+            "partitionOption": "None",
+            "datasetSettings": {
+              "type": "LakehouseTable",
+              "typeProperties": {
+                "schema": "NewPipe",
+                "table": {
+                  "value": "@pipeline().parameters.target_table",
+                  "type": "Expression"
+                }
+              },
+              "schema": [],
+              "linkedService": {
+                "name": "lh_bronze",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "b9eb157d-6c40-8a6b-4139-ed20f4ac55a7",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "rootFolder": "Tables"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "translator": {
+            "type": "TabularTranslator",
+            "typeConversion": true,
+            "typeConversionSettings": {
+              "allowDataTruncation": true,
+              "treatBooleanAsNumber": false
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Copy Data to Bronze",
+        "dependsOn": [
+          {
+            "activity": "Start Table Load",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "database": "db-control",
+          "storedProcedureName": "[control].[usp_complete_table_load]",
+          "storedProcedureParameters": {
+            "activity_run_id": {
+              "value": {
+                "value": "@activity('Copy Data to Bronze').ActivityRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "data_read_bytes": {
+              "value": {
+                "value": "@activity('Copy Data to Bronze').output.dataRead",
+                "type": "Expression"
+              },
+              "type": "Int64"
+            },
+            "data_written_bytes": {
+              "value": {
+                "value": "@activity('Copy Data to Bronze').output.dataWritten",
+                "type": "Expression"
+              },
+              "type": "Int64"
+            },
+            "error_message": {
+              "value": "",
+              "type": "String"
+            },
+            "load_history_id": {
+              "value": {
+                "value": "@activity('Start Table Load').output.firstRow.load_history_id",
+                "type": "Expression"
+              },
+              "type": "Int32"
+            },
+            "rows_read": {
+              "value": {
+                "value": "@activity('Copy Data to Bronze').output.rowsRead",
+                "type": "Expression"
+              },
+              "type": "Int64"
+            },
+            "rows_written": {
+              "value": {
+                "value": "@activity('Copy Data to Bronze').output.rowsCopied",
+                "type": "Expression"
+              },
+              "type": "Int64"
+            },
+            "status": {
+              "value": "Succeeded",
+              "type": "String"
+            }
+          }
+        },
+        "externalReferences": {
+          "connection": "8405b1e0-58de-4664-a4c2-0372f5291420"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Complete Table Load - Success",
+        "dependsOn": [
+          {
+            "activity": "Copy Data to Bronze",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SqlServerStoredProcedure",
+        "typeProperties": {
+          "database": "db-control",
+          "storedProcedureName": "[control].[usp_complete_table_load]",
+          "storedProcedureParameters": {
+            "activity_run_id": {
+              "value": {
+                "value": "@activity('Copy Data to Bronze').ActivityRunId",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "data_read_bytes": {
+              "value": "0",
+              "type": "Int64"
+            },
+            "data_written_bytes": {
+              "value": "0",
+              "type": "Int64"
+            },
+            "error_message": {
+              "value": {
+                "value": "@activity('Copy Data to Bronze').output.errors[0].Message",
+                "type": "Expression"
+              },
+              "type": "String"
+            },
+            "load_history_id": {
+              "value": {
+                "value": "@activity('Start Table Load').output.firstRow.load_history_id",
+                "type": "Expression"
+              },
+              "type": "Int32"
+            },
+            "rows_read": {
+              "value": "0",
+              "type": "Int64"
+            },
+            "rows_written": {
+              "value": "0",
+              "type": "Int64"
+            },
+            "status": {
+              "value": "Failed",
+              "type": "String"
+            }
+          }
+        },
+        "externalReferences": {
+          "connection": "8405b1e0-58de-4664-a4c2-0372f5291420"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Complete Table Load - Failure",
+        "dependsOn": [
+          {
+            "activity": "Copy Data to Bronze",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "batch_cutoff_time": {
+        "type": "string",
+        "defaultValue": "2024-01-15T00:00:00Z"
+      },
+      "batch_run_id": {
+        "type": "string",
+        "defaultValue": "1"
+      },
+      "config_id": {
+        "type": "int",
+        "defaultValue": 0
+      },
+      "source_schema": {
+        "type": "string",
+        "defaultValue": "Application"
+      },
+      "source_table": {
+        "type": "string",
+        "defaultValue": "Cities"
+      },
+      "target_table": {
+        "type": "string",
+        "defaultValue": "wwi_application_cities"
+      },
+      "load_type": {
+        "type": "string",
+        "defaultValue": "full"
+      },
+      "watermark_column": {
+        "type": "string"
+      },
+      "last_watermark": {
+        "type": "string",
+        "defaultValue": "1900-01-01"
+      }
+    }
+  }
+}
