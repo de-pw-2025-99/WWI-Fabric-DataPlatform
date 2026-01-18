@@ -8,7 +8,7 @@
             "type": "FabricSqlDatabaseSource",
             "sqlReaderQuery": "select * from control.load_config",
             "partitionOption": "None",
-            "queryTimeout": "02:00:00"
+            "queryTimeout": "10:00:00"
           },
           "datasetSettings": {
             "type": "FabricSqlDatabaseTable",
@@ -32,13 +32,13 @@
           "firstRowOnly": false
         },
         "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
+          "timeout": "0.16:00:00",
+          "retry": 10,
           "retryIntervalInSeconds": 30,
-          "secureInput": false,
-          "secureOutput": false
+          "secureInput": true,
+          "secureOutput": true
         },
-        "name": "Lookup from Control Table - Now changes from GIT",
+        "name": "Changes FROM GIT",
         "description": "Testing if I can changes in git and reflected on fabric ?!~/ / ```",
         "dependsOn": []
       }
