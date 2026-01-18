@@ -38,7 +38,7 @@
           "secureInput": false,
           "secureOutput": false
         },
-        "name": "Lookup from Control Table",
+        "name": "Lookup from Control Table - Now changes from GIT",
         "dependsOn": []
       }
     ]
