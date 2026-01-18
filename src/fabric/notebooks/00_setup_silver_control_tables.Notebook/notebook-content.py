@@ -26,6 +26,18 @@
 
 # CELL ********************
 
+df = spark.sql("SELECT * FROM lh_silver.dbo._silver_load_config LIMIT 1000")
+display(df)
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
 from pyspark.sql.types import *
 
 silver_load_config_schema = StructType([

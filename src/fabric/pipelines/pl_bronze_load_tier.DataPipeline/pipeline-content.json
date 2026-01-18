@@ -2,47 +2,48 @@
   "properties": {
     "activities": [
       {
-        "name": "Get Tables for Tier",
-        "description": "Get Tables in Control Table for Tiers Loading",
         "type": "Lookup",
-        "dependsOn": [],
+        "typeProperties": {
+          "source": {
+            "type": "FabricSqlDatabaseSource",
+            "sqlReaderQuery": {
+              "value": "SELECT * \nFROM control.load_config                    \nWHERE load_tier = @{pipeline().parameters.load_tier}\n     AND is_active = 1",
+              "type": "Expression"
+            },
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "FabricSqlDatabaseTable",
+            "schema": [],
+            "connectionSettings": {
+              "name": "db-control",
+              "properties": {
+                "type": "FabricSqlDatabase",
+                "typeProperties": {
+                  "artifactId": "f5c247c9-131b-a4a7-4856-a88897f1a02c",
+                  "workspaceId": "00000000-0000-0000-0000-000000000000"
+                },
+                "externalReferences": {
+                  "connection": "d253be85-4c7e-4620-8b15-37fc36a52955"
+                },
+                "annotations": []
+              }
+            },
+            "annotations": []
+          },
+          "firstRowOnly": false
+        },
         "policy": {
           "timeout": "0.12:00:00",
           "retry": 0,
           "retryIntervalInSeconds": 30,
-          "secureOutput": false,
-          "secureInput": false
+          "secureInput": false,
+          "secureOutput": false
         },
-        "typeProperties": {
-          "source": {
-            "type": "AzureSqlSource",
-            "sqlReaderStoredProcedureName": "[control].[usp_get_tables_by_tier]",
-            "storedProcedureParameters": {
-              "load_tier": {
-                "type": "Int32",
-                "value": {
-                  "value": "@pipeline().parameters.load_tier",
-                  "type": "Expression"
-                }
-              }
-            },
-            "queryTimeout": "02:00:00",
-            "isolationLevel": "ReadCommitted",
-            "partitionOption": "None"
-          },
-          "firstRowOnly": false,
-          "datasetSettings": {
-            "annotations": [],
-            "type": "AzureSqlTable",
-            "schema": [],
-            "typeProperties": {
-              "database": "db-control"
-            },
-            "externalReferences": {
-              "connection": "8405b1e0-58de-4664-a4c2-0372f5291420"
-            }
-          }
-        }
+        "name": "Get Tables for Tier",
+        "description": "Get Tables in Control Table for Tiers Loading",
+        "dependsOn": []
       }
     ],
     "parameters": {
