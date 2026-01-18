@@ -1,0 +1,265 @@
+{
+  "properties": {
+    "jobMode": "CDC",
+    "source": {
+      "type": "SqlServerTable",
+      "connectionSettings": {
+        "type": "SqlServer",
+        "typeProperties": {
+          "database": "WideWorldImporters"
+        },
+        "externalReferences": {
+          "connection": "cddfdda1-e456-4e41-9611-b283a3a7ce00"
+        }
+      }
+    },
+    "destination": {
+      "type": "LakehouseTable",
+      "connectionSettings": {
+        "type": "Lakehouse",
+        "typeProperties": {
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "artifactId": "b9eb157d-6c40-8a6b-4139-ed20f4ac55a7",
+          "rootFolder": "Tables"
+        }
+      }
+    },
+    "policy": {
+      "timeout": "0.12:00:00"
+    }
+  },
+  "activities": [
+    {
+      "id": "325068c4-4ab2-4cfc-b7a8-c87036ddf253",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "Application",
+            "table": "DeliveryMethods"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "DeliveryMethodID",
+                "type": "Int32",
+                "physicalType": "int"
+              }
+            ]
+          }
+        },
+        "destination": {
+          "writeBehavior": "Append",
+          "datasetSettings": {
+            "schema": "CopyJob",
+            "table": "DeliveryMethods"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "22a6e52d-2e94-4c22-bee2-275eed07d7dd",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "Application",
+            "table": "PaymentMethods"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "PaymentMethodID",
+                "type": "Int32",
+                "physicalType": "int"
+              }
+            ]
+          }
+        },
+        "destination": {
+          "writeBehavior": "Append",
+          "datasetSettings": {
+            "schema": "CopyJob",
+            "table": "PaymentMethods"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "6a850d52-e0a3-4f78-9813-61c81cbec6ae",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "querySettings": {
+              "queryName": "Application_Countries_Fix",
+              "query": "SELECT [CountryID]\r\n      ,[CountryName]\r\n      ,[FormalName]\r\n      ,[IsoAlpha3Code]\r\n      ,[IsoNumericCode]\r\n      ,[CountryType]\r\n      ,[LatestRecordedPopulation]\r\n      --,[Continent]\r\n      --,[Region]\r\n      --,[Subregion]\r\n      ,[Border].STAsText() [Border]\r\n      ,[LastEditedBy]\r\n      ,[ValidFrom]\r\n      ,[ValidTo]\r\n  FROM [Application].[Countries]"
+            }
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "CountryID",
+                "type": "Int32",
+                "physicalType": "int"
+              }
+            ]
+          }
+        },
+        "destination": {
+          "writeBehavior": "Append",
+          "datasetSettings": {
+            "schema": "CopyJob",
+            "table": "Application_Countries"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "4676e572-aae4-40b6-8a41-f251af223912",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "querySettings": {
+              "queryName": "Sales_Customers_Fix",
+              "query": "SELECT [CustomerID]\r\n      ,[CustomerName]\r\n      ,[BillToCustomerID]\r\n      ,[CustomerCategoryID]\r\n      ,[BuyingGroupID]\r\n      ,[PrimaryContactPersonID]\r\n      ,[AlternateContactPersonID]\r\n      ,[DeliveryMethodID]\r\n      ,[DeliveryCityID]\r\n      ,[PostalCityID]\r\n      ,[CreditLimit]\r\n      ,[AccountOpenedDate]\r\n      ,[StandardDiscountPercentage]\r\n      ,[IsStatementSent]\r\n      ,[IsOnCreditHold]\r\n      ,[PaymentDays]\r\n      ,[PhoneNumber]\r\n      ,[FaxNumber]\r\n      ,[DeliveryRun]\r\n      --,[RunPosition]\r\n      --,[WebsiteURL]\r\n      --,[DeliveryAddressLine1]\r\n      --,[DeliveryAddressLine2]\r\n      --,[DeliveryPostalCode]\r\n      ,[DeliveryLocation].STAsText() AS DeliveryLocation\r\n      ,[PostalAddressLine1]\r\n      ,[PostalAddressLine2]\r\n      ,[PostalPostalCode]\r\n      ,[LastEditedBy]\r\n      ,[ValidFrom]\r\n      ,[ValidTo]\r\n  FROM [Sales].[Customers]\r\n\r\nGO\r\n"
+            }
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "CustomerID",
+                "type": "Int32",
+                "physicalType": "int"
+              }
+            ]
+          }
+        },
+        "destination": {
+          "writeBehavior": "Append",
+          "datasetSettings": {
+            "schema": "CopyJob",
+            "table": "Sales_Customers"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "dca28dc9-55e2-4eca-918f-af41472d61f6",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "Sales",
+            "table": "OrderLines"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "OrderLineID",
+                "type": "Int32",
+                "physicalType": "int"
+              }
+            ]
+          }
+        },
+        "destination": {
+          "writeBehavior": "Append",
+          "datasetSettings": {
+            "schema": "CopyJob",
+            "table": "OrderLines"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "2a9e3dc0-2c77-46d5-ab5b-f65979678528",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "Sales",
+            "table": "Orders"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "OrderID",
+                "type": "Int32",
+                "physicalType": "int"
+              }
+            ]
+          }
+        },
+        "destination": {
+          "writeBehavior": "Append",
+          "datasetSettings": {
+            "schema": "CopyJob",
+            "table": "Orders"
+          }
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    }
+  ]
+}

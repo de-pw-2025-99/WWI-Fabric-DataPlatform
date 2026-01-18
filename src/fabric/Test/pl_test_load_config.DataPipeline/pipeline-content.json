@@ -1,0 +1,261 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "AzureSqlSource",
+            "sqlReaderQuery": "SELECT\t\n\t[config_id]\n\t, [source_schema]\n\t, [source_table]\n\t, [source_query]\n\t, [target_lakehouse]\n\t, [target_schema]\n\t, [target_table]\n\t, [load_type]\n\t, [load_tier]\n\t, [load_priority]\n\t, [watermark_column]\n\t, [watermark_data_type]\n\t, [last_watermark]\n\t, [is_active]\n\t, [is_enabled_for_full]\n\t, [row_count_source]\n\t, [row_count_loaded]\n\t, [last_load_status]\n\t, [last_load_start]\n\t, [last_load_end]\n\t, [last_error_message]\n\t, [created_date]\n\t, [created_by]\n\t, [modified_date]\n\t, [modified_by]\t\nFROM [control].load_config\nWHERE is_active = 1",
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "AzureSqlTable",
+            "typeProperties": {
+              "database": "db-control"
+            },
+            "schema": [],
+            "externalReferences": {
+              "connection": "8405b1e0-58de-4664-a4c2-0372f5291420"
+            },
+            "annotations": []
+          },
+          "firstRowOnly": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Load Config Settings",
+        "dependsOn": []
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('Load Config Settings').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "IfCondition",
+              "typeProperties": {
+                "expression": {
+                  "value": "@not(equals(item().source_query, json('null')))",
+                  "type": "Expression"
+                },
+                "ifTrueActivities": [
+                  {
+                    "type": "Copy",
+                    "typeProperties": {
+                      "source": {
+                        "type": "SqlServerSource",
+                        "sqlReaderQuery": {
+                          "value": "@item().source_query",
+                          "type": "Expression"
+                        },
+                        "partitionOption": "None",
+                        "queryTimeout": "02:00:00",
+                        "datasetSettings": {
+                          "type": "SqlServerTable",
+                          "typeProperties": {
+                            "database": "WideWorldImporters"
+                          },
+                          "schema": [],
+                          "externalReferences": {
+                            "connection": "cddfdda1-e456-4e41-9611-b283a3a7ce00"
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "sink": {
+                        "type": "LakehouseTableSink",
+                        "tableActionOption": "Append",
+                        "applyVOrder": true,
+                        "partitionOption": "None",
+                        "datasetSettings": {
+                          "type": "LakehouseTable",
+                          "typeProperties": {
+                            "schema": {
+                              "value": "@variables('New_Schema')",
+                              "type": "Expression"
+                            },
+                            "table": {
+                              "value": "@item().target_table",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "linkedService": {
+                            "name": "lh_bronze",
+                            "properties": {
+                              "type": "Lakehouse",
+                              "typeProperties": {
+                                "artifactId": "b9eb157d-6c40-8a6b-4139-ed20f4ac55a7",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                                "rootFolder": "Tables"
+                              },
+                              "annotations": []
+                            }
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                          "allowDataTruncation": true,
+                          "treatBooleanAsNumber": false
+                        }
+                      },
+                      "enableStaging": false
+                    },
+                    "policy": {
+                      "timeout": "0.12:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 35,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "Copy by Query",
+                    "dependsOn": []
+                  }
+                ],
+                "ifFalseActivities": [
+                  {
+                    "type": "Copy",
+                    "typeProperties": {
+                      "source": {
+                        "type": "SqlServerSource",
+                        "partitionOption": "None",
+                        "queryTimeout": "02:00:00",
+                        "datasetSettings": {
+                          "type": "SqlServerTable",
+                          "typeProperties": {
+                            "schema": {
+                              "value": "@item().source_schema",
+                              "type": "Expression"
+                            },
+                            "table": {
+                              "value": "@item().source_table",
+                              "type": "Expression"
+                            },
+                            "database": "WideWorldImporters"
+                          },
+                          "schema": [],
+                          "externalReferences": {
+                            "connection": "cddfdda1-e456-4e41-9611-b283a3a7ce00"
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "sink": {
+                        "type": "LakehouseTableSink",
+                        "tableActionOption": "Append",
+                        "applyVOrder": true,
+                        "partitionOption": "None",
+                        "datasetSettings": {
+                          "type": "LakehouseTable",
+                          "typeProperties": {
+                            "schema": {
+                              "value": "@variables('New_Schema')",
+                              "type": "Expression"
+                            },
+                            "table": {
+                              "value": "@item().target_table",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "linkedService": {
+                            "name": "lh_bronze",
+                            "properties": {
+                              "type": "Lakehouse",
+                              "typeProperties": {
+                                "artifactId": "b9eb157d-6c40-8a6b-4139-ed20f4ac55a7",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                                "rootFolder": "Tables"
+                              },
+                              "annotations": []
+                            }
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                          "allowDataTruncation": true,
+                          "treatBooleanAsNumber": false
+                        }
+                      },
+                      "enableStaging": false
+                    },
+                    "policy": {
+                      "timeout": "0.12:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 35,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "Copy by table",
+                    "dependsOn": []
+                  }
+                ]
+              },
+              "name": "if source_query_avaliable",
+              "dependsOn": [
+                {
+                  "activity": "Set New Schema Name",
+                  "dependencyConditions": [
+                    "Completed"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "SetVariable",
+              "typeProperties": {
+                "variableName": "New_Schema",
+                "value": {
+                  "value": "@concat(item().target_schema, '_BrandNew' )",
+                  "type": "Expression"
+                }
+              },
+              "policy": {
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Set New Schema Name",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "ForEach row in config table",
+        "dependsOn": [
+          {
+            "activity": "Load Config Settings",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "variables": {
+      "New_Schema": {
+        "type": "String",
+        "defaultValue": "abc"
+      },
+      "source_query": {
+        "type": "String"
+      }
+    }
+  }
+}
