@@ -5,42 +5,30 @@
         "type": "Lookup",
         "typeProperties": {
           "source": {
-            "type": "AzureSqlSource",
-            "sqlReaderStoredProcedureName": "[control].[usp_start_table_load]",
-            "storedProcedureParameters": {
-              "batch_run_id": {
-                "type": "Int32",
-                "value": {
-                  "value": "@pipeline().parameters.batch_run_id",
-                  "type": "Expression"
-                }
-              },
-              "config_id": {
-                "type": "Int32",
-                "value": {
-                  "value": "@pipeline().parameters.config_id",
-                  "type": "Expression"
-                }
-              },
-              "pipeline_run_id": {
-                "type": "String",
-                "value": {
-                  "value": "@pipeline().RunId",
-                  "type": "Expression"
-                }
-              }
-            },
+            "type": "FabricSqlDatabaseSource",
             "partitionOption": "None",
             "queryTimeout": "02:00:00"
           },
           "datasetSettings": {
-            "type": "AzureSqlTable",
+            "type": "FabricSqlDatabaseTable",
             "typeProperties": {
-              "database": "db-control"
+              "schema": "control",
+              "table": "load_config"
             },
             "schema": [],
-            "externalReferences": {
-              "connection": "8405b1e0-58de-4664-a4c2-0372f5291420"
+            "connectionSettings": {
+              "name": "db-control",
+              "properties": {
+                "type": "FabricSqlDatabase",
+                "typeProperties": {
+                  "artifactId": "f5c247c9-131b-a4a7-4856-a88897f1a02c",
+                  "workspaceId": "00000000-0000-0000-0000-000000000000"
+                },
+                "externalReferences": {
+                  "connection": "d253be85-4c7e-4620-8b15-37fc36a52955"
+                },
+                "annotations": []
+              }
             },
             "annotations": []
           },
@@ -319,6 +307,9 @@
       "last_watermark": {
         "type": "string",
         "defaultValue": "1900-01-01"
+      },
+      "source_db": {
+        "type": "string"
       }
     }
   }

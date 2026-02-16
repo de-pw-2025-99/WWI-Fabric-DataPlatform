@@ -2,7 +2,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
     "type": "DataPipeline",
-    "displayName": "pl_bronze_load_single_table"
+    "displayName": "pl_bronze_load_single_table",
+    "description": "Loads a single table from source SQL Server to Bronze Lakehouse. Supports both full and incremental load patterns."
   },
   "config": {
     "version": "2.0",
